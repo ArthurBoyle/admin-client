@@ -26,3 +26,12 @@ export const reqWeather = () => {
         });
     });
 }
+
+// 3. 获取一级或某个二级分类列表
+export const reqGetCategoryList = (parentId) => ajax("/manage/category/list", "GET", {parentId});
+
+// 4. 添加分类
+export const reqAddCategory = (parentId, categoryName) => ajax("/manage/category/add", "POST", {parentId, categoryName});
+
+// 5. 更新分类
+export const reqUpdateCategory = (categoryId, categoryName) => ajax("/manage/category/update", "POST", {categoryId, categoryName});
