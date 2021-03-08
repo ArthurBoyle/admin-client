@@ -35,3 +35,12 @@ export const reqAddCategory = (parentId, categoryName) => ajax("/manage/category
 
 // 5. 更新分类
 export const reqUpdateCategory = (categoryId, categoryName) => ajax("/manage/category/update", "POST", {categoryId, categoryName});
+
+// 6. 获取商品分页列表
+export const reqGetProductList = (pageNum, pageSize) => ajax("/manage/product/list", "GET", {pageNum, pageSize});
+
+// 7. 根据商品名称/描述搜索
+export const reqSearchProducts = (pageNum, pageSize, searchType, searchName) => ajax("manage/product/search", "GET", {pageNum, pageSize, [searchType]: searchName});
+
+// 8. 商品上架/下架
+export const reqUpdateStatus = (productId, status) => ajax("/manage/product/updateStatus", "POST", {productId, status});
