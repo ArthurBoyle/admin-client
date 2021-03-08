@@ -44,3 +44,6 @@ export const reqSearchProducts = (pageNum, pageSize, searchType, searchName) => 
 
 // 8. 商品上架/下架
 export const reqUpdateStatus = (productId, status) => ajax("/manage/product/updateStatus", "POST", {productId, status});
+
+// 9. 根据分类ID获取分类
+export const reqGetCategoryNameById = (categoryId) => ajax("/manage/category/info", "GET", {categoryId});
