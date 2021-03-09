@@ -65,8 +65,12 @@ class LeftNav extends Component {
      */
 
     render() {
-        const path = this.props.location.pathname;
+        let path = this.props.location.pathname;
         const openKey = this.openKey;
+        // 修改path的值，使其能够与Product的子路由进行匹配
+        if (path.indexOf("/product") === 0) {
+            path = "/product";
+        }
         return (
             <div className="left-nav">
                 <Link to="/" className="left-nav-header">
