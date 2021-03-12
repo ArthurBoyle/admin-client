@@ -29,7 +29,7 @@ class LeftNav extends Component {
             } else {
                 const path = this.props.location.pathname;
                 // 查找与当前路径匹配的子Item
-                const cItem = item.children.find(childrenItem => childrenItem.key === path);
+                const cItem = item.children.find(childrenItem => path.indexOf(childrenItem.key) === 0);
                 if (cItem) {
                     this.openKey = item.key;
                 }

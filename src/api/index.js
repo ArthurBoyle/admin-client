@@ -47,3 +47,9 @@ export const reqUpdateStatus = (productId, status) => ajax("/manage/product/upda
 
 // 9. 根据分类ID获取分类
 export const reqGetCategoryNameById = (categoryId) => ajax("/manage/category/info", "GET", {categoryId});
+
+// 10. 删除图片
+export const reqDeleteImg = (name) => ajax("/manage/img/delete", "POST", {name});
+
+// 11. 添加/修改商品
+export const reqAddOrUpdateProduct = (product) => ajax("/manage/product/" + (product._id ? "update" : "add"), "POST", product);
