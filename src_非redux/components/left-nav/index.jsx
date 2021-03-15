@@ -3,12 +3,11 @@ import React, {Component} from 'react';
 import {Link, withRouter} from "react-router-dom";
 import { Menu } from 'antd';
 import * as Icon from "@ant-design/icons";
-import {connect} from "react-redux";
 
 import menuList from "../../config/menuConfig";
 import logo from "../../assets/images/logo.png";
 import "./index.less";
-import {setHeadTitle} from "../../redux/actions";
+import memoryUtils from "../../utils/memoryUtils";
 
 const { SubMenu, Item } = Menu;
 
@@ -27,9 +26,9 @@ class LeftNav extends Component {
             3.如果当前用户有权限，返回true
             4.如果当前用户有item的子item权限，返回true
          */
-        const username = this.props.user.username;
+        const username = memoryUtils.user.username;
         const key = item.key
-        const menus = this.props.user.role.menus;
+        const menus = memoryUtils.user.role.menus;
         if (username === "admin" || item.isPublic || menus.indexOf(key) !== -1) {
             return true;
         } else if (item.children) {
@@ -76,17 +75,9 @@ class LeftNav extends Component {
             // 如果当前用户有对应的item权限，才需要显示对应的菜单项
             if (this.hasAuth(item)) {
                 if (!item.children) {
-                    if (item.key === path || path.indexOf(item.key) === 0) {
-                        this.props.setHeadTitle(item.title);
-                    }
                     pre.push((
                         <Item key={item.key} icon={React.createElement(Icon[item.icon])}>
-                            <Link
-                                to={item.key}
-                                onClick={() => this.props.setHeadTitle(item.title)}
-                            >
-                                {item.title}
-                            </Link>
+                            <Link to={item.key}>{item.title}</Link>
                         </Item>
                     ))
                 } else {
@@ -131,10 +122,7 @@ class LeftNav extends Component {
     }
 }
 
-export default connect(
-    state => ({user: state.user}),
-    {setHeadTitle}
-)(withRouter(LeftNav));
+export default withRouter(LeftNav);
 
 /*
 <Item key="/home" icon={<HomeOutlined />}>

@@ -1,18 +1,31 @@
 import React, {Component} from 'react';
 import {Redirect} from "react-router-dom";
-import {connect} from "react-redux";
-import {Form, Input, Button} from "antd";
+import {Form, Input, Button, message} from "antd";
+import MD5 from "blueimp-md5";
 
+import {reqLogin} from "../../api";
+import memoryUtils from "../../utils/memoryUtils";
+import storageUtils from "../../utils/storageUtils";
 import logo from "../../assets/images/logo.png";
-import {login} from "../../redux/actions";
 import "./index.less";
 
 const {Item} = Form;
 
-class Login extends Component {
+export default class Login extends Component {
     onFinish = async (values) => {
         const {username, password} = values;
-        this.props.login(username, password);
+        const result = await reqLogin(username, password);
+        if (result.status === 0) {
+            message.success("登陆成功");
+            let user = result.data;
+            const password = MD5(user.password);
+            user = {...user, password};
+            memoryUtils.user = user;
+            storageUtils.saveUser(user);
+            this.props.history.replace("/");
+        } else {
+            message.error("登陆失败");
+        }
     };
 
     onFinishFailed = (errorInfo) => {
@@ -20,7 +33,7 @@ class Login extends Component {
     };
 
     render() {
-        const user = this.props.user;
+        const user = memoryUtils.user;
         if (user && user._id) {
             return <Redirect to="/"/>
         }
@@ -78,8 +91,3 @@ class Login extends Component {
         );
     }
 }
-
-export default connect(
-    state => ({user: state.user}),
-    {login}
-)(Login);

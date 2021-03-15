@@ -1,16 +1,16 @@
 // 角色管理路由
 import React, {Component} from 'react';
 import {Card, Button, Table, Modal, Form, Input, message} from "antd";
-import {connect} from "react-redux";
 
 import {reqGetRoleList, reqAddRole, reqUpdateRole} from "../../../api";
 import AuthForm from "./role-auth-form";
+import memoryUtils from "../../../utils/memoryUtils";
 import {formateDate} from "../../../utils/dateUtils";
 import storageUtils from "../../../utils/storageUtils";
 
 const {Item} = Form;
 
-class Role extends Component {
+export default class Role extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -43,6 +43,24 @@ class Role extends Component {
         this.addRoleForm = React.createRef();
         this.updateRoleForm = React.createRef();
     }
+    /*    columns = [
+          {
+              title: "角色名称",
+              dataIndex: "name"
+          },
+          {
+              title: "创建时间",
+              dataIndex: "create_time"
+          },
+          {
+              title: "授权时间",
+              dataIndex: "auth_time"
+          },
+          {
+              title: "授权人",
+              dataIndex: "auth_name"
+          }
+      ]*/
 
     getRoleList = async () => {
         this.setState({isLoading: true});
@@ -85,14 +103,14 @@ class Role extends Component {
         const _id = this.state.selectRole._id;
         const menus = this.updateRoleForm.current.getMenus();
         const auth_time = Date.now();
-        const auth_name = this.props.user.username;
+        const auth_name = memoryUtils.user.username;
         const updateRole = {_id, menus, auth_time, auth_name};
         const result = await reqUpdateRole(updateRole);
         if (result.status === 0) {
             message.success("更新成功");
-            if (this.props.user.role_id === _id) {
-                this.props.user.role.menus = menus;
-                storageUtils.saveUser(this.props.user);
+            if (memoryUtils.user.role_id === _id) {
+                memoryUtils.user.role.menus = menus;
+                storageUtils.saveUser(memoryUtils.user);
                 this.props.history.replace("/login");
             } else {
                 this.getRoleList();
@@ -176,8 +194,3 @@ class Role extends Component {
         );
     }
 }
-
-export default connect(
-    state => ({user: state.user}),
-    {}
-)(Role);

@@ -2,12 +2,13 @@ import React, {Component} from 'react';
 import {withRouter} from "react-router-dom";
 import { Modal } from 'antd';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
-import {connect} from "react-redux";
 
 import {reqWeather} from "../../api";
 import {formateDate} from "../../utils/dateUtils";
+import menuList from "../../config/menuConfig";
+import memoryUtils from "../../utils/memoryUtils";
+import storageUtils from "../../utils/storageUtils";
 import LinkButton from "../link-button";
-import {logout} from "../../redux/actions";
 import "./index.less";
 
 const { confirm } = Modal;
@@ -30,19 +31,42 @@ class Header extends Component {
         clearInterval(this.timer);
     }
 
+    getTitle = () => {
+        const path = this.props.location.pathname;
+        let title;
+        menuList.forEach((item) => {
+            if (item.key === path) {
+                title = item.title;
+            } else if (item.children) {
+                // item.children.forEach((cItem) => {
+                //     if (cItem.key === path) {
+                //         title = cItem.title;
+                //     }
+                // })
+                const cItem = item.children.find((cItem) => path.indexOf(cItem.key) === 0);
+                if (cItem) {
+                    title = cItem.title;
+                }
+            }
+        });
+        return title;
+    }
+
     logout = () => {
         confirm({
             title: 'Do you Want to logout current user?',
             icon: <ExclamationCircleOutlined />,
             onOk:() => {
-                this.props.logout();
+                memoryUtils.user = {};
+                storageUtils.removeUser();
+                this.props.history.replace("/login");
             }
         });
     }
 
     render() {
         const {currentTime, weather, temperature} = this.state;
-        const {username} = this.props.user;
+        const {username} = memoryUtils.user;
         return (
             <div className="header">
                 <div className="header-top">
@@ -50,7 +74,7 @@ class Header extends Component {
                     <LinkButton onClick={this.logout}>退出</LinkButton>
                 </div>
                 <div className="header-bottom">
-                    <div className="header-bottom-left">{this.props.headTitle}</div>
+                    <div className="header-bottom-left">{this.getTitle()}</div>
                     <div className="header-bottom-right">
                         <span>{currentTime}</span>
                         <span>{weather}</span>
@@ -62,7 +86,4 @@ class Header extends Component {
     }
 }
 
-export default connect(
-    state => ({headTitle: state.headTitle, user: state.user}),
-    {logout})
-(withRouter(Header));
+export default withRouter(Header);
