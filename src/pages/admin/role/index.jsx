@@ -6,6 +6,7 @@ import {reqGetRoleList, reqAddRole, reqUpdateRole} from "../../../api";
 import AuthForm from "./role-auth-form";
 import memoryUtils from "../../../utils/memoryUtils";
 import {formateDate} from "../../../utils/dateUtils";
+import storageUtils from "../../../utils/storageUtils";
 
 const {Item} = Form;
 
@@ -107,10 +108,16 @@ export default class Role extends Component {
         const result = await reqUpdateRole(updateRole);
         if (result.status === 0) {
             message.success("更新成功");
-            this.getRoleList();
-            this.setState({
-                selectRole: {...this.state.selectRole, ...updateRole}
-            });
+            if (memoryUtils.user.role_id === _id) {
+                memoryUtils.user.role.menus = menus;
+                storageUtils.saveUser(memoryUtils.user);
+                this.props.history.replace("/login");
+            } else {
+                this.getRoleList();
+                this.setState({
+                    selectRole: {...this.state.selectRole, ...updateRole}
+                });
+            }
         }
     }
 
@@ -179,7 +186,7 @@ export default class Role extends Component {
                     onCancel={() => {
                         this.setState({showUpdateRole: false})
                     }}
-                    // destroyOnClose
+                    destroyOnClose
                 >
                     <AuthForm selectRole={selectRole} ref={this.updateRoleForm}/>
                 </Modal>
