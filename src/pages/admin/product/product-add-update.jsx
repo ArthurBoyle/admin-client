@@ -5,6 +5,7 @@ import {LeftOutlined} from "@ant-design/icons";
 import LinkButton from "../../../components/link-button";
 import {reqGetCategoryList, reqAddOrUpdateProduct} from "../../../api";
 import ProductAddUpdatePicturesWall from "./product-add-update-pictureswall";
+import "./index.less";
 
 const {Item} = Form;
 const {TextArea} = Input;
@@ -142,7 +143,9 @@ export default class ProductAddUpdate extends Component {
         return (
             <Card title={title}>
                 <Form
+                    className="form"
                     {...formItemLayout}
+                    // style={{width: 400}}
                     onFinish={this.onFinish}
                 >
                     <Item

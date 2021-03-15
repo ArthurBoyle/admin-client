@@ -124,7 +124,8 @@ export default class ProductHome extends Component {
                         defaultPageSize: PAGE_SIZE,
                         total,
                         // onChange: (pageNum) => {this.getProductList(pageNum)}
-                        onChange: this.getProductList
+                        onChange: this.getProductList,
+                        current: this.pageNum
                     }}
                     loading={isLoading}
                 />
