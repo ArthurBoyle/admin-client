@@ -2,7 +2,7 @@ import {combineReducers} from "redux";
 import storageUtils from "../utils/storageUtils";
 import {SET_HEAD_TITLE, RECEIVE_USER, SHOW_ERROR_MSG, RESET_USER} from "./constant";
 
-const initHeadTitle = "首页";
+const initHeadTitle = "";
 function headTitle(preState=initHeadTitle, action) {
     const {type, data} = action;
     switch (type) {
